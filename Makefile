@@ -22,7 +22,7 @@ render_manifest_firefox: version
 build_firefox: render_manifest_firefox
 	mkdir -p build
 	rm -f build/${NAME}-$(VERSION)_firefox.zip
-	cd src && zip -r ../build/${NAME}-$(VERSION)_firefox.zip *
+	./node_modules/.bin/web-ext build -s src/ -a build/
 
 build_chrome: render_manifest_chrome
 	mkdir -p build
@@ -30,3 +30,6 @@ build_chrome: render_manifest_chrome
 	cd src && zip -r ../build/${NAME}-$(VERSION)_chrome.zip *
 
 build: build_firefox build_chrome
+
+run: render_manifest_firefox
+	./node_modules/.bin/web-ext run -s src
