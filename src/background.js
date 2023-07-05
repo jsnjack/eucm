@@ -73,6 +73,7 @@ function navigationHandler(details) {
                     secure: cookie.secure,
                     value: encode_cookie_value(cookie.value, cookie.secure),
                 };
+                console.debug("transfering to surfly", cookie, newCookie);
                 chrome.cookies.set(newCookie)
             }
         }
