@@ -72,7 +72,6 @@ function navigationHandler(details) {
             for (let cookie of cookies) {
                 const newCookie = {
                     url: "https://" + toSurflyDomain(details.url) + toDomainPath(details.url),
-                    domain: toSurflyDomain(details.url),
                     expirationDate: cookie.expirationDate,
                     httpOnly: cookie.httpOnly,
                     name: encode_cookie_key(cookie.name, cookie.path),
@@ -81,7 +80,7 @@ function navigationHandler(details) {
                     value: encode_cookie_value(cookie.value, cookie.secure),
                 };
                 chrome.cookies.set(newCookie).then((transferedCookie) => {
-                    console.debug("transfered to Surfly", cookie, transferedCookie);
+                    console.debug("transfered to Surfly", cookie, newCookie, transferedCookie);
                 });
             }
         }
