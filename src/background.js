@@ -77,11 +77,12 @@ function navigationHandler(details) {
                     httpOnly: cookie.httpOnly,
                     name: encode_cookie_key(cookie.name, cookie.path),
                     path: toDomainPath(cookie.domain),
-                    secure: cookie.secure,
+                    secure: true,
                     value: encode_cookie_value(cookie.value, cookie.secure),
                 };
-                console.debug("transfering to surfly", cookie, newCookie);
-                chrome.cookies.set(newCookie)
+                chrome.cookies.set(newCookie).then((transferedCookie) => {
+                    console.debug("transfered to Surfly", cookie, transferedCookie);
+                });
             }
         }
     });
