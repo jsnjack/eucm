@@ -27,5 +27,8 @@ build_chrome: render_manifest_chrome
 
 build: build_firefox build_chrome
 
+release: build
+	grm release jsnjack/${NAME} -f ./build/${NAME}-$(VERSION)_chrome.zip -f ./build/${NAME}-$(VERSION)_firefox.zip -t "v`monova`"
+
 run: render_manifest_firefox
 	./node_modules/.bin/web-ext run -s src
