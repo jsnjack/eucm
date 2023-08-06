@@ -1,4 +1,7 @@
-const surflyDomain = 'surfly.online';
+const surflyDomains = [
+    "surfly.online",
+    "surfly.com",
+];
 
 function encode_cookie_key(key, path) {
     let encoded_key = "_" + encodeURIComponent(key).replace(/_/g, "%5f") + "_";
@@ -48,17 +51,34 @@ function getTLD(url) {
     return null;
 }
 
-function toSurflyDomain(url) {
+function toSurflyDomain(url, domain) {
     const tld = getTLD(url);
-    return tld ? encodeDomain(tld) + "-p." + surflyDomain : null;
+    return tld ? encodeDomain(tld) + "-p." + domain : null;
 }
 
 function isProxified(url) {
     const { hostname } = new URL(url);
-    if (hostname.endsWith('-p.' + surflyDomain)) {
-        return true;
-    }
+    surflyDomains.forEach((domain) => {
+        if (hostname.endsWith('-p.' + domain)) {
+            return true;
+        }
+    });
     return false;
+}
+
+function setCookie(cookie, url, domain) {
+    const newCookie = {
+        url: "https://" + toSurflyDomain(url, domain) + toDomainPath(url),
+        expirationDate: cookie.expirationDate,
+        httpOnly: cookie.httpOnly,
+        name: encode_cookie_key(cookie.name, cookie.path),
+        path: toDomainPath(cookie.domain),
+        secure: true,
+        value: encode_cookie_value(cookie.value, cookie.secure),
+    };
+    chrome.cookies.set(newCookie).then((transferedCookie) => {
+        // console.debug(`transfered ${cookie.name} to ${domain}:`, transferedCookie);
+    });
 }
 
 function navigationHandler(details) {
@@ -70,18 +90,9 @@ function navigationHandler(details) {
     gettingAllCookies.then((cookies) => {
         if (cookies.length > 0) {
             for (let cookie of cookies) {
-                const newCookie = {
-                    url: "https://" + toSurflyDomain(details.url) + toDomainPath(details.url),
-                    expirationDate: cookie.expirationDate,
-                    httpOnly: cookie.httpOnly,
-                    name: encode_cookie_key(cookie.name, cookie.path),
-                    path: toDomainPath(cookie.domain),
-                    secure: true,
-                    value: encode_cookie_value(cookie.value, cookie.secure),
-                };
-                chrome.cookies.set(newCookie).then((transferedCookie) => {
-                    console.debug("transfered to Surfly", cookie, newCookie, transferedCookie);
-                });
+                surflyDomains.forEach((domain) => {
+                    setCookie(cookie, details.url,domain);
+                })
             }
         }
     });
