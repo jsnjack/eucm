@@ -3,6 +3,7 @@ const surflyDomains = [
     "surfly.com",
 ];
 
+
 function encode_cookie_key(key, path) {
     let encoded_key = "_" + encodeURIComponent(key).replace(/_/g, "%5f") + "_";
     if (path) {
@@ -10,6 +11,12 @@ function encode_cookie_key(key, path) {
     }
     return encoded_key;
 }
+
+// List of cookies which will be restored, if evicted
+const favouriteCookies = [
+    "surfly_dashboard_sessionid", // Surfly dashboard cookie
+    encode_cookie_key("surfly_dashboard_sessionid", "/"),
+];
 
 function encode_cookie_value(value, is_secure) {
     if (is_secure) {
@@ -91,11 +98,29 @@ function navigationHandler(details) {
         if (cookies.length > 0) {
             for (let cookie of cookies) {
                 surflyDomains.forEach((domain) => {
-                    setCookie(cookie, details.url,domain);
+                    setCookie(cookie, details.url, domain);
                 })
             }
         }
     });
 }
 
+function cookieChangedHandler(details) {
+    // Catch surfly login cookie and do not allow it to be evicted (to prevent
+    // logging out from surfly due to big number of cookies)
+    if (details.cause === "evicted" && favouriteCookies.includes(details.cookie.name)) {
+        const newCookie = {
+            url: `https://${details.cookie.domain}${details.cookie.path}`,
+            expirationDate: details.cookie.expirationDate,
+            httpOnly: details.cookie.httpOnly,
+            name: details.cookie.name,
+            path: details.cookie.path,
+            secure: details.cookie.secure,
+            value: details.cookie.value,
+        };
+        chrome.cookies.set(newCookie);
+    }
+}
+
 chrome.webNavigation.onCompleted.addListener(navigationHandler);
+chrome.cookies.onChanged.addListener(cookieChangedHandler);
