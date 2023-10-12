@@ -14,8 +14,32 @@ function encode_cookie_key(key, path) {
 
 // List of cookies which will be restored, if evicted
 const favouriteCookies = [
+    // Surfly cookies
     "surfly_dashboard_sessionid", // Surfly dashboard cookie
     encode_cookie_key("surfly_dashboard_sessionid", "/"),
+    "cobro_session", // Contains session infornmation
+
+    // Google cookies
+    "APISID",
+    "SID",
+    "SSID",
+    "HSID",
+    "SAPISID",
+    "SIDCC",
+    "CONSENT",
+    "PREF",
+    encode_cookie_key("APISID", "/"),
+    encode_cookie_key("SID", "/"),
+    encode_cookie_key("SSID", "/"),
+    encode_cookie_key("HSID", "/"),
+    encode_cookie_key("SAPISID", "/"),
+    encode_cookie_key("SIDCC", "/"),
+    encode_cookie_key("CONSENT", "/"),
+    encode_cookie_key("PREF", "/"),
+
+    // Github cookies
+    "_gh_sess",
+    encode_cookie_key("_gh_sess", "/"),
 ];
 
 function encode_cookie_value(value, is_secure) {
