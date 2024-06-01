@@ -97,6 +97,17 @@ function isProxified(url) {
     return false;
 }
 
+
+function _setCookie(cookie) {
+    if (typeof browser !== 'undefined') {
+        // Firefox doesn't support partitionKey
+        delete cookie.partitionKey;
+    }
+    chrome.cookies.set(cookie).then((transferedCookie) => {
+        console.debug(`transfered ${transferedCookie.name} to ${transferedCookie.domain}:`, transferedCookie);
+    });
+}
+
 function setCookie(cookie, url, domain) {
     const newCookie = {
         url: "https://" + toSurflyDomain(url, domain) + toDomainPath(url),
@@ -106,10 +117,9 @@ function setCookie(cookie, url, domain) {
         path: toDomainPath(cookie.domain),
         secure: true,
         value: encode_cookie_value(cookie.value, cookie.secure),
+        partitionKey: { topLevelSite: `https://${domain}` }
     };
-    chrome.cookies.set(newCookie).then((transferedCookie) => {
-        // console.debug(`transfered ${cookie.name} to ${domain}:`, transferedCookie);
-    });
+    _setCookie(newCookie);
 }
 
 function navigationHandler(details) {
@@ -132,17 +142,27 @@ function navigationHandler(details) {
 function cookieChangedHandler(details) {
     // Catch surfly login cookie and do not allow it to be evicted (to prevent
     // logging out from surfly due to big number of cookies)
-    if (details.cause === "evicted" && favouriteCookies.includes(details.cookie.name)) {
-        const newCookie = {
-            url: `https://${details.cookie.domain}${details.cookie.path}`,
-            expirationDate: details.cookie.expirationDate,
-            httpOnly: details.cookie.httpOnly,
-            name: details.cookie.name,
-            path: details.cookie.path,
-            secure: details.cookie.secure,
-            value: details.cookie.value,
-        };
-        chrome.cookies.set(newCookie);
+    let wasEvicted = false;
+    let wasReset = false;
+    if (details.cause === "evicted") {
+        wasEvicted = true;
+        if (favouriteCookies.includes(details.cookie.name)) {
+            wasReset = true;
+            const newCookie = {
+                url: `https://${details.cookie.domain}${details.cookie.path}`,
+                expirationDate: details.cookie.expirationDate,
+                httpOnly: details.cookie.httpOnly,
+                name: details.cookie.name,
+                path: details.cookie.path,
+                secure: details.cookie.secure,
+                value: details.cookie.value,
+                partitionKey: cookie.partitionKey
+            };
+            _setCookie(newCookie);
+        }
+    }
+    if (wasEvicted && !wasReset) {
+        // console.debug("Cookie evicted:", details.cookie.name, details.cookie.domain);
     }
 }
 
