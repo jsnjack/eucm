@@ -17,25 +17,37 @@ const favouriteCookies = [
     // Surfly cookies
     "surfly_dashboard_sessionid", // Surfly dashboard cookie
     encode_cookie_key("surfly_dashboard_sessionid", "/"),
-    "cobro_session", // Contains session infornmation
+    "cobro_session", // Contains session information
 
-    // Google cookies
+    // Google cookies (marked by google with high priority)
     "APISID",
-    "SID",
-    "SSID",
     "HSID",
     "SAPISID",
+    "SID",
     "SIDCC",
-    "CONSENT",
-    "PREF",
+    "SSID",
+    "__Secure-1PAPISID",
+    "__Secure-1PSID",
+    "__Secure-1PSIDCC",
+    "__Secure-1PSIDTS",
+    "__Secure-3PAPISID",
+    "__Secure-3PSID",
+    "__Secure-3PSIDCC",
+    "__Secure-3PSIDTS",
     encode_cookie_key("APISID", "/"),
-    encode_cookie_key("SID", "/"),
-    encode_cookie_key("SSID", "/"),
     encode_cookie_key("HSID", "/"),
     encode_cookie_key("SAPISID", "/"),
+    encode_cookie_key("SID", "/"),
     encode_cookie_key("SIDCC", "/"),
-    encode_cookie_key("CONSENT", "/"),
-    encode_cookie_key("PREF", "/"),
+    encode_cookie_key("SSID", "/"),
+    encode_cookie_key("__Secure-1PAPISID", "/"),
+    encode_cookie_key("__Secure-1PSID", "/"),
+    encode_cookie_key("__Secure-1PSIDCC", "/"),
+    encode_cookie_key("__Secure-1PSIDTS", "/"),
+    encode_cookie_key("__Secure-3PAPISID", "/"),
+    encode_cookie_key("__Secure-3PSID", "/"),
+    encode_cookie_key("__Secure-3PSIDCC", "/"),
+    encode_cookie_key("__Secure-3PSIDTS", "/"),
 
     // Github cookies
     "_gh_sess",
