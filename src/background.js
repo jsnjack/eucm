@@ -99,10 +99,6 @@ function isProxified(url) {
 
 
 function _setCookie(cookie) {
-    if (typeof browser !== 'undefined') {
-        // Firefox doesn't support partitionKey
-        delete cookie.partitionKey;
-    }
     chrome.cookies.set(cookie).then((transferedCookie) => {
         console.debug(`transfered ${transferedCookie.name} to ${transferedCookie.domain}:`, transferedCookie);
     });
