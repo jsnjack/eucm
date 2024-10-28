@@ -17,7 +17,12 @@ const favouriteCookies = [
     // Surfly cookies
     "surfly_dashboard_sessionid", // Surfly dashboard cookie
     encode_cookie_key("surfly_dashboard_sessionid", "/"),
+
+    "sessionid", // console session cookie
+    encode_cookie_key("sessionid", "/"),
+
     "cobro_session", // Contains session information
+    "space_token", // User's token to join console spaces
 
     // Google cookies (marked by google with high priority)
     "APISID",
