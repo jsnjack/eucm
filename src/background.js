@@ -3,6 +3,20 @@ const surflyDomains = [
     "surfly.com",
 ];
 
+let firefoxVersion = null;
+
+function isFirefox() {
+    return typeof browser !== 'undefined';
+}
+
+async function getFirefoxVersion() {
+    if (firefoxVersion === null) {
+        const info = await browser.runtime.getBrowserInfo();
+        firefoxVersion = parseInt(info.version);
+    }
+    return firefoxVersion;
+}
+
 
 function encode_cookie_key(key, path) {
     let encoded_key = "_" + encodeURIComponent(key).replace(/_/g, "%5f") + "_";
@@ -115,10 +129,17 @@ function isProxified(url) {
 }
 
 
-function _setCookie(cookie) {
-    chrome.cookies.set(cookie).then((transferedCookie) => {
-        console.debug(`transfered ${transferedCookie.name} to ${transferedCookie.domain}:`, transferedCookie);
-    });
+async function _setCookie(cookie) {
+    if (isFirefox()) {
+        // Some of the Firefox versions do not support partitionKey
+        const version = await getFirefoxVersion();
+        // Firefox 131 is the first and the only one version which supports partitionKey
+        if (version !== 131) {
+            delete cookie.partitionKey;
+        }
+    }
+    const transferedCookie = await chrome.cookies.set(cookie);
+    console.debug(`transfered ${transferedCookie.name} to ${transferedCookie.domain}:`, transferedCookie);
 }
 
 function setCookie(cookie, url, domain) {
