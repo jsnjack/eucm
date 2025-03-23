@@ -1,6 +1,8 @@
 const surflyDomains = [
     "surfly.online",
     "surfly.com",
+    "webfuse.com",
+    "webfu.se"
 ];
 
 let firefoxVersion = null;
@@ -32,8 +34,11 @@ const favouriteCookies = [
     "surfly_dashboard_sessionid", // Surfly dashboard cookie
     encode_cookie_key("surfly_dashboard_sessionid", "/"),
 
-    "sessionid", // console session cookie
-    encode_cookie_key("sessionid", "/"),
+    "console_sessionid", // console session cookie
+    encode_cookie_key("console_sessionid", "/"),
+
+    "space_token", // Used to join console spaces
+    encode_cookie_key("space_token", "/"),
 
     "cobro_session", // Contains session information
     "space_token", // User's token to join console spaces
