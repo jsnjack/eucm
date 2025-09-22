@@ -15,7 +15,7 @@ As a result - you will never need to log in again!
 
 #### I've noticed that I'm often logged out of surfly website. How can I fix it?
 The browsers store all cookies in the cookie store. Each top level domain has its
-own cookie store with the limited space. This space is different for each browser.
+own cookie store with the limited space. [This space is different for each browser](https://testsite.surfly.com/cookietest.html).
 Firefox and Chrome set it to 180 cookies.
 
 When the extension replicates cookies from a website to Surfly (for example,
@@ -38,4 +38,5 @@ The problem can also be addressed by changing the default browser configuration:
    - `network.cookie.maxNumber` set it to 10000
    - `network.cookie.maxPerHost` set it to 2000
    - `network.cookie.quotaPerHost` set it to 1950
+   - `network.cookie.chips.partitionLimitEnabled` set it to `false`
  - for Chrome users: install Firefox
